@@ -1,0 +1,9 @@
+{#for post in posts}
+    <div class="postContainer">
+        <em><strong>{post.author}</strong> said</em>:
+        <p>
+            <blockquote>{post.content}</blockquote> 
+        </p>
+        <small>{post.date}</small>
+    </div>
+{/for}

@@ -1,0 +1,82 @@
+<html>
+
+<head>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <style>
+        body {
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contentInput {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 5px
+        }
+
+        .postsContainer {
+            border: 1px solid rgb(207, 205, 205);
+        }
+
+        .postContainer {
+            border: 1px double darkgrey;
+            margin: 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Microblog</h1>
+    <div>
+        <h3>New post</h3>
+        <form id="newPostForm" method="POST">
+            <textarea placeholder="Say something..." name="content" class="contentInput" required></textarea> <br />
+            <label for="author">Author: </label><br /><input type="text" placeholder="Tell me your name" name="author"
+                required /> <br />
+            <input type="submit" value="Post" />
+        </form>
+
+    </div>
+    <h2>Posts</h2>
+    <div class="postsContainer">
+
+    </div>
+    <script lang="js">
+        $(() => {
+            loadPosts();
+            const newPostForm = $("#newPostForm");
+            newPostForm.submit(e => {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/micropost",
+                    data: newPostForm.serialize()
+                }).done(data => {
+                    newPostForm.trigger("reset");
+                    loadPosts();
+                });
+                return false;
+            })
+          
+        });
+
+        function loadPosts() {
+            $.ajax({
+                headers: {
+                    Accept: "text/html",
+                },
+                url: "/micropost"
+            }).done(data => {
+                $(".postsContainer").html(data);
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>

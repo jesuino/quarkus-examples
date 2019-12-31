@@ -105,73 +105,73 @@
 
 <body>
 
-    <div class="banner lead">
-        FXApps: Quarkus application Form Authentication using Database
+<div class="banner lead">
+    FXApps: Quarkus application Form Authentication using Database
+</div>
+
+<div class="container">
+    <div class="left-column">
+        <p class="lead">This application has login and authorization</p>
+
+        <h2>Public content</h2>
+
+        <h4 id="content_public" style="color: blue">
+        </h4>
+
+        <div id="logged" style="display:none">
+            <h2>Only for logged users!</h2>
+            <h3 style="color:orange" id="content_users"></h3>
+            <h4 style="color:red" id="content_managers"></h4>
+
+        </div>
+    </div>
+    <div class="right-column">
+        <div class="right-section">
+            <h3><a id="login_link" href="login.html">Login</a> <em id="user_message"></em></h3>
+            <p>Try to see some <a href="/secured">secured content</a></p>
+            <p><button id="logout" style="display:none" onclick="logout()">Logout</button></p>
+        </div>
     </div>
 
-    <div class="container">
-        <div class="left-column">
-            <p class="lead">This application has login and authorization</p>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
-            <h2>Public content</h2>
+    <script lang="js">
+        const LOGGED_COOKIE = "quarkus-credential";
+        $(() => {
+            $.get("/sample/public", data => {
+                console.log(data);
+                $("#content_public").text(data);
+            });
+            $.get("/sample/info", data => {
+                if (data) {
+                    console.log(data)
+                    $("#login_link").hide();
+                    $("#user_message").text("Hello, " + data);
+                    $("#logout").show();
+                    $("#logged").show();
+                    loadRestrictedContent();
+                } else {
+                    $("#login_link").show()
+                }
+            });
+        });
 
-            <h4 id="content_public" style="color: blue">
-            </h4>
+        function logout() {
+            console.log("logging out")
+            document.cookie = LOGGED_COOKIE + '=; Max-Age=0'
+            window.location.href = "/";
+        }
 
-            <div id="logged" style="display:none">
-                <h2>Only for logged users!</h2>
-                <h3 style="color:orange" id="content_users"></h3>
-                <h4 style="color:red" id="content_managers"></h4>
-
-            </div>
-        </div>
-        <div class="right-column">
-            <div class="right-section">
-                <h3><a id="login_link" href="login.html">Login</a> <em id="user_message"></em></h3>
-                <p>Try to see some <a href="/secured">secured content</a></p>
-                <p><button id="logout" style="display:none" onclick="logout()">Logout</button></p>
-            </div>
-        </div>
-
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-
-        <script lang="js">
-            const LOGGED_COOKIE = "quarkus-credential";
-            $(() => {
-                $.get("/sample/public", data => {
-                    console.log(data);
-                    $("#content_public").text(data);
-                });
-                $.get("/sample/info", data => {
-                    if (data) {
-                        console.log(data)
-                        $("#login_link").hide();
-                        $("#user_message").text("Hello, " + data);
-                        $("#logout").show();
-                        $("#logged").show();
-                        loadRestrictedContent();
-                    } else {
-                        $("#login_link").show()
-                    }
-                });
+        function loadRestrictedContent() {
+            $.get("/sample/user_managers", data => {
+                $("#content_users").text(data);
             });
 
-            function logout() {
-                console.log("logging out")
-                document.cookie = LOGGED_COOKIE + '=; Max-Age=0'
-                window.location.href = "/";
-            }
-
-            function loadRestrictedContent() {
-                $.get("/sample/user_managers", data => {
-                    $("#content_users").text(data);
-                });
-
-                $.get("/sample/managers", data => {
-                    $("#content_managers").text(data);
-                })
-            }
-        </script>
+            $.get("/sample/managers", data => {
+                $("#content_managers").text(data);
+            })
+        }
+    </script>
 </body>
 
 </html>
