@@ -18,3 +18,7 @@ apiVersion: app.kiegroup.org/v1beta1
 kind: KogitoRuntime
 metadata:
   name: swf-greeting-persistence-monitoring
+  infra:
+    - kogito-infinispan-infra
+    - kogito-kafka-infra
+
